@@ -1,38 +1,29 @@
 package dao;
 
 
-import tmall.bean.User;
-import tmall.util.DBUtil;
+
+import bean.User;
+import utlis.DBUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
-
-    public int getTotal() {
-        int total = 0;
-        try (Connection c = DBUtil.getConnection(); Statement s = c.createStatement()) {
-
-            String sql = "select count(*) from User";
-
-            ResultSet rs = s.executeQuery(sql);
-            while (rs.next()) {
-                total = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-        }
-        return total;
-    }
-
-    public boolean add(User bean) {
+    Connection conn = null;
+    PreparedStatement ps = null;
+    ResultSet rs;
+    /**
+     * 增加用户
+     * @param bean
+     * @return
+     */
+    public boolean add(User bean){
         boolean addFlag = false;
         String sql = "insert into user values(null ,? ,?)";
-//        try (Connection c = DBUtil.getConnection(); PreparedStatement ps = c.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)) {
-        try (Connection c = DBUtil.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
-
+        try {
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
             ps.setString(1, bean.getName());
             ps.setString(2, bean.getPassword());
 
@@ -40,24 +31,46 @@ public class UserDAO {
             if (res>0){
                 addFlag = true;
             }
-
-//            ResultSet rs = ps.getGeneratedKeys();
-//            int i = ps.executeUpdate();
-//            if (rs.next()) {
-//                int id = rs.getInt(1);
-//                bean.setId(id);
-//            }
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            DBUtil.close(ps, conn);
         }
         return addFlag;
     }
 
+
+    /**
+     * 删除用户
+     * @param id
+     */
+    public void delete(int id) {
+        String sql = "delete from User where id = " + id;
+
+        try {
+
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.execute(sql);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            DBUtil.close(ps, conn);
+        }
+    }
+
+    /**
+     * 更新用户信息
+     * @param bean
+     */
     public void update(User bean) {
 
         String sql = "update user set name= ? , password = ? where id = ? ";
-        try (Connection c = DBUtil.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+        try {
 
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
             ps.setString(1, bean.getName());
             ps.setString(2, bean.getPassword());
             ps.setInt(3, bean.getId());
@@ -65,34 +78,51 @@ public class UserDAO {
             ps.execute();
 
         } catch (SQLException e) {
-
             e.printStackTrace();
+        }finally {
+            DBUtil.close(ps, conn);
         }
 
     }
 
-    public void delete(int id) {
+    /**
+     * 判断用户名是否已存在
+     * @param name
+     * @return
+     */
+    public boolean isExist(String name) {
+        User user = get(name);
+        return user != null;
+    }
 
-        try (Connection c = DBUtil.getConnection(); Statement s = c.createStatement()) {
+    public int getTotal() {
+        String sql = "select count(*) from User";
+        int total = 0;
+        try {
 
-            String sql = "delete from User where id = " + id;
-
-            s.execute(sql);
-
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery(sql);
+            while (rs.next()) {
+                total = rs.getInt(1);
+            }
         } catch (SQLException e) {
 
             e.printStackTrace();
+        }finally {
+            DBUtil.close(rs, ps, conn);
         }
+        return total;
     }
 
     public User get(int id) {
         User bean = null;
+        String sql = "select * from User where id = " + id;
 
-        try (Connection c = DBUtil.getConnection(); Statement s = c.createStatement()) {
-
-            String sql = "select * from User where id = " + id;
-
-            ResultSet rs = s.executeQuery(sql);
+        try {
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery(sql);
 
             if (rs.next()) {
                 bean = new User();
@@ -104,8 +134,9 @@ public class UserDAO {
             }
 
         } catch (SQLException e) {
-
             e.printStackTrace();
+        }finally {
+            DBUtil.close(rs, ps, conn);
         }
         return bean;
     }
@@ -119,12 +150,13 @@ public class UserDAO {
 
         String sql = "select * from User order by id desc limit ?,? ";
 
-        try (Connection c = DBUtil.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
-
+        try {
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
             ps.setInt(1, start);
             ps.setInt(2, count);
 
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
 
             while (rs.next()) {
                 User bean = new User();
@@ -139,25 +171,25 @@ public class UserDAO {
                 beans.add(bean);
             }
         } catch (SQLException e) {
-
             e.printStackTrace();
+        }finally {
+            DBUtil.close(rs, ps, conn);
         }
         return beans;
     }
 
-    public boolean isExist(String name) {
-        User user = get(name);
-        return user != null;
 
-    }
 
     public User get(String name) {
         User bean = null;
 
         String sql = "select * from User where name = ?";
-        try (Connection c = DBUtil.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+        try {
+
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
             ps.setString(1, name);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
 
             if (rs.next()) {
                 bean = new User();
@@ -169,8 +201,9 @@ public class UserDAO {
             }
 
         } catch (SQLException e) {
-
             e.printStackTrace();
+        }finally {
+            DBUtil.close(rs, ps, conn);
         }
         return bean;
     }
@@ -179,10 +212,12 @@ public class UserDAO {
         User bean = null;
 
         String sql = "select * from User where name = ? and password=?";
-        try (Connection c = DBUtil.getConnection(); PreparedStatement ps = c.prepareStatement(sql)) {
+        try {
+            conn = DBUtil.getConnection();
+            ps = conn.prepareStatement(sql);
             ps.setString(1, name);
             ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
 
             if (rs.next()) {
                 bean = new User();
@@ -191,11 +226,12 @@ public class UserDAO {
                 bean.setPassword(password);
                 bean.setId(id);
             }
-
         } catch (SQLException e) {
-
             e.printStackTrace();
+        }finally {
+            DBUtil.close(rs, ps, conn);
         }
+
         return bean;
     }
 
