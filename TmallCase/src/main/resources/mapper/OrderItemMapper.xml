@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.dao.OrderItemDao">
+<!--    <select id="orderItemGetter" resultType="com.pojo.OrderItem">-->
+<!--        select t.*, p.cid from (select * from orderitem where uid = 2) as t, product p where t.pid=p.id;-->
+<!--    </select>-->
+    <select id="getAllOrderItemInCart" resultType="com.pojo.OrderItem">
+        select t.*, p.cid from (select * from orderitem where uid = #{id} and oid=-1) as t, product p where t.pid=p.id;
+    </select>
+    <update id="putNewOrderItem">
+        insert into orderitem(pid, oid, uid, number) values (#{pid}, #{oid}, #{uid}, #{number})
+    </update>
+
+    <select id="getOneOrderItem" resultType="com.pojo.OrderItem">
+        select * from orderitem where uid=#{uid} and pid=#{pid} and oid=#{oid};
+    </select>
+    <update id="updateOneOrderItemInCart">
+        update orderitem set number=#{number}, oid=#{oid} where uid=#{uid} and pid=#{pid} and id=#{id};
+    </update>
+    <delete id="removeCartOrderItem">
+        delete from orderitem where id=#{id};
+    </delete>
+    <select id="getOneOrderItemByOrderId" resultType="com.pojo.OrderItem">
+        select * from orderitem where id=#{id};
+    </select>
+
+    <select id="getAllOrderItemByUserId" resultType="com.pojo.Order">
+        select * from order_ where uid=#{id};
+    </select>
+    <select id="getAllOrderItemByOrderId" resultType="com.pojo.OrderItem">
+        select * from orderitem where oid=#{oid};
+    </select>
+</mapper>
