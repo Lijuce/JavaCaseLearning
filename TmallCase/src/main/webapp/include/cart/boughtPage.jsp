@@ -33,7 +33,8 @@
 
         $('#deleteConfirmModal').on('hidden.bs.modal', function (e) {
             if (deleteOrder) {
-                var page = "foredeleteOrder";
+                // var page = "foredeleteOrder";
+                var page = "deleteOrderController";
                 $.post(
                     page,
                     {"oid": deleteOrderid},
@@ -95,8 +96,7 @@
                 <tr class="orderListItemFirstTR">
                     <td colspan="2">
                         <b><fmt:formatDate value="${o.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/></b>
-                        <span>订单号: ${o.orderCode}
-                    </span>
+                        <span>订单号: ${o.orderCode}</span>
                     </td>
                     <td colspan="2"><img width="13px" src="img/site/orderItemTmall.png">天猫商场</td>
                     <td colspan="1">
@@ -120,7 +120,8 @@
                         </td>
                         <td class="orderItemProductInfoPartTD">
                             <div class="orderListItemProductLinkOutDiv">
-                                <a href="foreproduct?pid=${oi.product.id}">${oi.product.name}</a>
+<%--                                <a href="foreproduct?pid=${oi.product.id}">${oi.product.name}</a>--%>
+                                <a href="/foreproduct?pid=${oi.product.id}">${oi.product.name}</a>
                                 <div class="orderListItemProductLinkInnerDiv">
                                     <img src="img/site/creditcard.png" title="支持信用卡支付">
                                     <img src="img/site/7day.png" title="消费者保障服务,承诺7天退货">
@@ -155,7 +156,8 @@
                             <td valign="top" rowspan="${fn:length(o.orderItems)}"
                                 class="orderListItemButtonTD orderItemOrderInfoPartTD" width="100px">
                                 <c:if test="${o.status=='waitConfirm' }">
-                                    <a href="foreconfirmPay?oid=${o.id}">
+<%--                                    <a href="foreconfirmPay?oid=${o.id}">--%>
+                                    <a href="ConfirmPayServlet?oid=${o.id}">
                                         <button class="orderListItemConfirm">确认收货</button>
                                     </a>
                                 </c:if>
@@ -186,4 +188,4 @@
 
     </div>
 
-</div>
+</div>P

@@ -5,16 +5,19 @@
 
     <c:forEach items="${ps}" var="p">
     <div class="productUnit" price="${p.promotePrice}">
-        <a href="foreproduct?pid=${p.id}">
+<%--        <a href="foreproduct?pid=${p.id}">--%>
+        <a href="ProductForServlet?pid=${p.id}">
             <img class="productImage" src="img/productSingle/${p.firstProductImage.id}.jpg">
         </a>
         <span class="productPrice">¥<fmt:formatNumber type="number" value="${p.promotePrice}"
                                                       minFractionDigits="2"/></span>
-        <a class="productLink" href="foreproduct?pid=${p.id}">
+<%--        <a class="productLink" href="foreproduct?pid=${p.id}">--%>
+        <a class="productLink" href="ProductForServlet?pid=${p.id}">
                 ${fn:substring(p.name, 0, 50)}
         </a>
 
-        <a class="tmallLink" href="foreproduct?pid=${p.id}">天猫专卖</a>
+<%--        <a class="tmallLink" href="foreproduct?pid=${p.id}">天猫专卖</a>--%>
+        <a class="tmallLink" href="ProductForServlet?pid=${p.id}">天猫专卖</a>
 
         <div class="productInfo">
             <span class="monthDeal ">月成交 <span class="productDealNumber">${p.saleCount}笔</span></span>
@@ -31,3 +34,4 @@
 
             <div style="clear:both"></div>
         </div>
+    </div>

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"
          pageEncoding="UTF-8" isELIgnored="false" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="C" uri="http://java.sun.com/jsp/jstl/core" %>
 <script>
 
     $(function () {
@@ -34,7 +35,7 @@
 
         $(".addCartLink").click(function () {
             // var page = "forecheckLogin";
-            var page = "checkLoginForServlet";
+            var page = "checkLogin";
             // var page = "";
             $.get(
                 page,
@@ -42,7 +43,8 @@
                     if ("success" == result) {
                         var pid = ${p.id};
                         var num = $(".productNumberSetting").val();
-                        var addCartpage = "foreaddCart";
+                        // var addCartpage = "foreaddCart";
+                        var addCartpage = "AddCartController";
                         $.get(
                             addCartpage,
                             {"pid": pid, "num": num},
@@ -55,6 +57,7 @@
                                     $(".addCartButton").css("color", "black")
                                 }
                                 else {
+                                    $(".addCartButton").html("加入失败");
                                 }
                             }
                         );
@@ -68,7 +71,7 @@
         });
         $(".buyLink").click(function () {
             // var page = "forecheckLogin";
-            var page = "checkLoginForServlet";
+            var page = "checkLogin";
             $.get(
                 page,
                 function (result) {
@@ -94,7 +97,7 @@
                 return false;
             }
 
-            var page = "foreloginAjax";
+            var page = "loginAjax";
             $.get(
                 page,
                 {"name": name, "password": password},
@@ -138,10 +141,10 @@
 <div class="imgAndInfo">
 
     <div class="imgInimgAndInfo">
-        <img src="img/productSingle/${p.firstProductImage.id}.jpg" class="bigImg">
+        <img src="${pageContext.request.contextPath}/img/productSingle/${p.firstProductImage.id}.jpg" class="bigImg">
         <div class="smallImageDiv">
             <c:forEach items="${p.productSingleImages}" var="pi">
-                <img src="img/productSingle_small/${pi.id}.jpg" bigImageURL="img/productSingle/${pi.id}.jpg"
+                <img src="${pageContext.request.contextPath}/img/productSingle_small/${pi.id}.jpg" bigImageURL="img/productSingle/${pi.id}.jpg"
                      class="smallImage">
             </c:forEach>
         </div>
@@ -163,7 +166,7 @@
                 <span>此商品即将参加聚划算，<span class="juhuasuanTime">1天19小时</span>后开始，</span>
             </div>
             <div class="productPriceDiv">
-                <div class="gouwujuanDiv"><img height="16px" src="img/site/gouwujuan.png">
+                <div class="gouwujuanDiv"><img height="16px" src="${pageContext.request.contextPath}/img/site/gouwujuan.png">
                     <span> 全天猫实物商品通用</span>
 
                 </div>
@@ -197,14 +200,14 @@
                 <span class="arrow">
                     <a href="#nowhere" class="increaseNumber">
                     <span class="updown">
-                            <img src="img/site/increase.png">
+                            <img src="${pageContext.request.contextPath}/img/site/increase.png">
                     </span>
                     </a>
 
                     <span class="updownMiddle"> </span>
                     <a href="#nowhere" class="decreaseNumber">
                     <span class="updown">
-                            <img src="img/site/decrease.png">
+                            <img src="${pageContext.request.contextPath}/img/site/decrease.png">
                     </span>
                     </a>
 
@@ -228,8 +231,9 @@
             <a class="buyLink" href="BuyoneServlet?pid=${p.id}">
                 <button class="buyButton">立即购买</button>
             </a>
-            <a href="#nowhere" class="addCartLink">
-                <button class="addCartButton"><span class="glyphicon glyphicon-shopping-cart"></span>加入购物车</button>
+<%--            <a href="#nowhere" class="addCartLink">--%>
+            <a href="/AddCartController" class="addCartLink">
+                <button class="addCartButton" ><span class="glyphicon glyphicon-shopping-cart"></span>加入购物车</button>
             </a>
         </div>
     </div>

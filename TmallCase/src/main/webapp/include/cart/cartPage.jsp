@@ -20,7 +20,7 @@
 
         $('#deleteConfirmModal').on('hidden.bs.modal', function (e) {
             if (deleteOrderItem) {
-                var page = "foredeleteOrderItem";
+                var page = "deleteOrderItem";
                 $.post(
                     page,
                     {"orderItem": deleteOrderItemid},
@@ -127,11 +127,13 @@
             $(".cartProductItemIfSelected").each(function () {
                 if ("selectit" == $(this).attr("selectit")) {
                     var orderItem = $(this).attr("orderItem");
-                    params += "&orderItem=" + orderItem;
+                    // params += "&orderItem=" + orderItem;
+                    params += "&orderItemId=" + orderItem;
                 }
             });
             params = params.substring(1);
-            location.href = "forebuy?" + params;
+            // location.href = "forebuy?" + params;
+            location.href = "readyOrderItem?" + params;
         });
 
 
@@ -198,7 +200,7 @@
         $(".cartProductItemSmallSumPrice[pid=" + pid + "]").html("￥" + cartProductItemSmallSumPrice);
         calcCartSumPriceAndNumber();
 
-        var page = "forechangeOrderItem";
+        var page = "changeCartNum";
         $.post(
             page,
             {"pid": pid, "number": num},
@@ -249,7 +251,8 @@
                     </td>
                     <td>
                         <div class="cartProductLinkOutDiv">
-                            <a href="foreproduct?pid=${oi.product.id}" class="cartProductLink">${oi.product.name}</a>
+<%--                            <a href="foreproduct?pid=${oi.product.id}" class="cartProductLink">${oi.product.name}</a>--%>
+                            <a href="/foreproduct?pid=${oi.product.id}" class="cartProductLink">${oi.product.name}</a>
                             <div class="cartProductLinkInnerDiv">
                                 <img src="img/site/creditcard.png" title="支持信用卡支付">
                                 <img src="img/site/7day.png" title="消费者保障服务,承诺7天退货">
@@ -270,8 +273,10 @@
                             <span class="hidden orderItemPromotePrice "
                                   pid="${oi.product.id}">${oi.product.promotePrice}</span>
                             <a pid="${oi.product.id}" class="numberMinus" href="#nowhere">-</a>
+<%--                            <a pid="${oi.product.id}" class="numberMinus" href="javascript:void(0);">-</a>--%>
                             <input pid="${oi.product.id}" orderItem="${oi.id}" class="orderItemNumberSetting"
                                    autocomplete="off" value="${oi.number}">
+                            <%--利用ajax异步机制更新商品加减数量，避免页面跳转--%>
                             <a stock="${oi.product.stock}" pid="${oi.product.id}" class="numberPlus"
                                href="#nowhere">+</a>
                         </div>
@@ -285,6 +290,7 @@
 
                     </td>
                     <td>
+<%--                        <a class="deleteOrderItem" orderItem="${oi.id}" href="#nowhere">删除</a>--%>
                         <a class="deleteOrderItem" orderItem="${oi.id}" href="#nowhere">删除</a>
                     </td>
                 </tr>

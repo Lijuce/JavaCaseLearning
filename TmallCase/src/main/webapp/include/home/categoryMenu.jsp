@@ -11,4 +11,12 @@
             </a>
         </div>
     </c:forEach>
+
+<%--    <c:forEach items="${categories}" var="c" varStatus="vs">--%>
+<%--        <div class="d-menu" cid="${c.id}" style="display: none">--%>
+<%--            <c:forEach items="${c.products}" var="p" varStatus="vs">--%>
+<%--                <a href="product?id=${p.id}">${p.subTitle}</a>--%>
+<%--            </c:forEach>--%>
+<%--        </div>--%>
+<%--    </c:forEach>--%>
 </div>

@@ -37,8 +37,7 @@
     })
 </script>
 
-<%--<form method="post" action="foreregister" class="registerForm">--%>
-<form method="post" action="RegisterServlet" class="registerForm">
+<form method="post" action="user/register" class="registerForm">
 
     <div class="registerDiv">
         <div class="registerErrorMessageDiv">
@@ -74,8 +73,8 @@
 
             <tr>
                 <td colspan="2" class="registerButtonTD">
-                    <a href="../registerSuccess.jsp">
-                        <button>提 交</button>
+                    <a href="registerSuccess.jsp">
+                    <button>提 交</button>
                     </a>
                 </td>
             </tr>

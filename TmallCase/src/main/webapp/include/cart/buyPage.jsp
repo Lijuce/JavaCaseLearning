@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"
          pageEncoding="UTF-8" isELIgnored="false" %>
 <div class="buyPageDiv">
-    <form action="forecreateOrder" method="post">
+<%--    <form action="forecreateOrder" method="post">--%>
+        <form action="crateOrderItem" method="post">  <%-- 创建订单--%>
 
         <div class="buyFlow">
             <img class="pull-left" src="img/site/simpleLogo.png">
@@ -66,7 +67,8 @@
                                                           src="img/productSingle_middle/${oi.product.firstProductImage.id}.jpg">
                         </td>
                         <td class="orderItemProductInfo">
-                            <a href="foreproduct?pid=${oi.product.id}" class="orderItemProductLink">
+<%--                            <a href="foreproduct?pid=${oi.product.id}" class="orderItemProductLink">--%>
+                            <a href="/foreproduct?pid=${oi.product.id}" class="orderItemProductLink">
                                     ${oi.product.name}
                             </a>
 

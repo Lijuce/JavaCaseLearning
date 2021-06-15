@@ -24,19 +24,24 @@
 
         var left = window.innerWidth / 2 + 162;
         $("div.loginSmallDiv").css("left", left);
+
+        if(!$("#refer").val()){
+            $("#refer").val(document.referrer);
+        }
     })
 </script>
 
-<div id="loginDiv" style="position: relative">
+<%--<div id="loginDiv" style="position: relative">--%>
+<div id="login" style="position: relative">
 
     <div class="simpleLogo">
-        <a href="http://how2j.cn/tmall"><img src="img/site/simpleLogo.png"></a>
+        <a href="${pageContext.request.contextPath}/"><img src="/img/site/simpleLogo.png"></a>
     </div>
 
-    <img id="loginBackgroundImg" class="loginBackgroundImg" src="img/site/loginBackground.png">
+    <img id="loginBackgroundImg" class="loginBackgroundImg" src="/img/site/loginBackground.png">
 
 <%--    <form class="loginForm" action="forelogin" method="post">--%>
-    <form class="loginForm" action="LoginServlet" method="post">
+    <form class="loginForm" action="login" method="post">
         <div id="loginSmallDiv" class="loginSmallDiv">
             <div class="loginErrorMessageDiv">
                 <div class="alert alert-danger">
@@ -58,6 +63,7 @@
                     <span class=" glyphicon glyphicon-lock"></span>
                 </span>
                 <input id="password" name="password" type="password" placeholder="密码" type="text">
+                <input type="hidden" name="refer" id="refer" value="${refer}">
             </div>
             <span class="text-danger">不要输入真实的天猫账号密码</span><br><br>
 
@@ -65,8 +71,8 @@
                 <a class="notImplementLink" href="#nowhere">忘记登录密码</a>
                 <a href="register.jsp" class="pull-right">免费注册</a>
             </div>
-            <div style="margin-top:20px">
-                <button class="btn btn-block redButton" type="submit">登录</button>
+            <div class="login-button" style="margin-top:20px">
+                <button class="btn btn-block redButton" type="submit" class="login-button">登录</button>
             </div>
         </div>
     </form>
