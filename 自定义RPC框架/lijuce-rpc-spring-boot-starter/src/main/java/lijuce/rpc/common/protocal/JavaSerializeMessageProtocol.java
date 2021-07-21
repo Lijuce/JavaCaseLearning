@@ -13,7 +13,6 @@ public class JavaSerializeMessageProtocol implements MessageProtocol{
     private byte[] serialize(Object obj) throws Exception {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(bout);
-//        out.writeObject(bout);  // wc。。。这里出错了
         out.writeObject(obj);
         return bout.toByteArray();
     }
