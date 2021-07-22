@@ -5,49 +5,60 @@ import com.dyuproject.protostuff.ProtobufIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 /**
  * 序列化消息协议
  * @author Lijuce
  */
 public class JavaSerializeMessageProtocol implements MessageProtocol{
-    static Schema<Object> schema = RuntimeSchema.getSchema(Object.class);
 
-    private byte[] serialize(Object obj) throws Exception {
+    /**
+     * 序列化
+     * @param obj
+     * @return
+     */
+    public static <T> byte[] serialize(T obj){
+        Schema<T> schema = RuntimeSchema.getSchema((Class<T>) obj.getClass());
         LinkedBuffer buffer = LinkedBuffer.allocate(512);
-        final byte[] protoStuff;
-        protoStuff = ProtobufIOUtil.toByteArray(obj, schema, buffer);
-        return protoStuff;
+        final byte[] result;
+        try {
+            result = ProtobufIOUtil.toByteArray(obj, schema, buffer);
+        } finally {
+            buffer.clear();
+        }
+        return result;
     }
 
-    private Object unSerialize(byte[] protoStuff){
-        // 读取对象，反序列化
-        Object obj = schema.newMessage();
+    /**
+     * 反序列化
+     * @param protoStuff
+     * @return
+     */
+    private static <T> T unSerialize(byte[] protoStuff, Class<T> clazz){
+        Schema<T> schema = RuntimeSchema.getSchema(clazz);
+        T obj = schema.newMessage();
         ProtobufIOUtil.mergeFrom(protoStuff, obj, schema);
         return obj;
     }
 
     @Override
-    public byte[] marshallingRequest(MyRequest req) throws Exception {
-        return this.serialize(req);
+    public byte[] marshallingRequest(MyRequest req){
+        return serialize(req);
     }
 
     @Override
     public MyRequest unmarshallingRequest(byte[] data) throws Exception {
-        return (MyRequest) this.unSerialize(data);
+        return unSerialize(data, MyRequest.class);
     }
 
     @Override
     public byte[] marshallingResponse(MyResponse rsp) throws Exception {
-        return this.serialize(rsp);
+        return serialize(rsp);
     }
 
     @Override
     public MyResponse unmarshallingResponse(byte[] data) throws Exception {
-        return (MyResponse) this.unSerialize(data);
+        return unSerialize(data, MyResponse.class);
     }
 }
