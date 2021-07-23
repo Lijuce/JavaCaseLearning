@@ -22,7 +22,7 @@ public class RpcProperty {
     /**
      * 服务协议
      */
-    private String protocol = "lijuce";
+    private String protocol = "javaJdk";
 
     public String getRegisterAddress() {
         return registerAddress;
