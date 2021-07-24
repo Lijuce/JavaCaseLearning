@@ -52,7 +52,7 @@ public class AutoConfiguration {
         // 设置支持的协议
         Map<String, MessageProtocol> supportMessageProtocols = new HashMap<>();
 //        supportMessageProtocols.put(rpcProperty.getProtocol(), new JavaSerializeMessageProtocol());
-//        supportMessageProtocols.put("javaJdk", new SerializeMessageJdk());
+        supportMessageProtocols.put("javaJdk", new SerializeMessageJdk());
         clientProxyFactory.setMessageProtocol(supportMessageProtocols);
 
         // 设置网络层实现
