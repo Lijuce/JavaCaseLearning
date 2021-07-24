@@ -1,14 +1,7 @@
 package lijuce.rpc.common.protocal;
 
-import com.dyuproject.protostuff.LinkedBuffer;
-import com.dyuproject.protostuff.ProtobufIOUtil;
-import com.dyuproject.protostuff.Schema;
-import com.dyuproject.protostuff.runtime.RuntimeSchema;
 import lijuce.rpc.annotation.MessageProtocolAno;
-import lijuce.rpc.common.protocal.protoUtils.ProtoBufMessageProtocol;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.*;
+import lijuce.rpc.common.protocal.protoUtils.SerializeMessageProtoStuff;
 
 /**
  * 序列化消息协议
@@ -19,21 +12,21 @@ public class JavaSerializeMessageProtocol implements MessageProtocol{
 
     @Override
     public byte[] marshallingRequest(MyRequest req){
-        return ProtoBufMessageProtocol.serialize(req);
+        return SerializeMessageProtoStuff.serialize(req);
     }
 
     @Override
     public MyRequest unmarshallingRequest(byte[] data) {
-        return ProtoBufMessageProtocol.unSerialize(data, MyRequest.class);
+        return SerializeMessageProtoStuff.unSerialize(data, MyRequest.class);
     }
 
     @Override
     public byte[] marshallingResponse(MyResponse rsp) {
-        return ProtoBufMessageProtocol.serialize(rsp);
+        return SerializeMessageProtoStuff.serialize(rsp);
     }
 
     @Override
     public MyResponse unmarshallingResponse(byte[] data) {
-        return ProtoBufMessageProtocol.unSerialize(data, MyResponse.class);
+        return SerializeMessageProtoStuff.unSerialize(data, MyResponse.class);
     }
 }

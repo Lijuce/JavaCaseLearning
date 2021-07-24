@@ -4,6 +4,7 @@ import lijuce.rpc.annotation.MessageProtocolAno;
 import lijuce.rpc.client.ClientProxyFactory;
 import lijuce.rpc.client.discovery.ZookeeperServiceDiscoverer;
 import lijuce.rpc.client.net.NettyNetClient;
+import lijuce.rpc.common.protocal.JavaSerializeMessageProtocol;
 import lijuce.rpc.common.protocal.MessageProtocol;
 import lijuce.rpc.common.protocal.protoUtils.SerializeMessageJdk;
 import lijuce.rpc.exception.rpcException;
@@ -51,7 +52,7 @@ public class AutoConfiguration {
 
         // 设置支持的协议
         Map<String, MessageProtocol> supportMessageProtocols = new HashMap<>();
-//        supportMessageProtocols.put(rpcProperty.getProtocol(), new JavaSerializeMessageProtocol());
+        supportMessageProtocols.put("protoStuff", new JavaSerializeMessageProtocol());
         supportMessageProtocols.put("javaJdk", new SerializeMessageJdk());
         clientProxyFactory.setMessageProtocol(supportMessageProtocols);
 
@@ -71,7 +72,7 @@ public class AutoConfiguration {
     @Bean
     public RequestHandle requestHandler(@Autowired ServiceRegister serviceRegister,
                                         @Autowired RpcProperty rpcProperty) {
-        return new RequestHandle(new SerializeMessageJdk(), serviceRegister);
+        return new RequestHandle(getMessageProtocol(rpcProperty.getProtocol()), serviceRegister);
     }
 
     @Bean
@@ -87,6 +88,7 @@ public class AutoConfiguration {
     }
 
     public static MessageProtocol getMessageProtocol(String protocolName){
+        // 利用ServiceLoader得到已定义的类
         ServiceLoader<MessageProtocol> loader = ServiceLoader.load(MessageProtocol.class);
         Iterator<MessageProtocol> iterator = loader.iterator();
         while (iterator.hasNext()) {

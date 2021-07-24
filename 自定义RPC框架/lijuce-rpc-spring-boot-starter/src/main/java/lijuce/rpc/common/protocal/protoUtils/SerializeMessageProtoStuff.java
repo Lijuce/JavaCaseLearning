@@ -4,6 +4,7 @@ import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtobufIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
+import lijuce.rpc.annotation.MessageProtocolAno;
 import lijuce.rpc.common.protocal.MessageProtocol;
 import lijuce.rpc.common.protocal.MyRequest;
 import lijuce.rpc.common.protocal.MyResponse;
@@ -15,7 +16,8 @@ import lijuce.rpc.common.protocal.MyResponse;
  * @Date 2021/7/22 18:20
  * @Version 1.0
  **/
-public class ProtoBufMessageProtocol {
+@MessageProtocolAno("protoStuff")
+public class SerializeMessageProtoStuff implements MessageProtocol{
 
     /**
      * 序列化
@@ -44,5 +46,26 @@ public class ProtoBufMessageProtocol {
         T obj = schema.newMessage();
         ProtobufIOUtil.mergeFrom(protoStuff, obj, schema);
         return obj;
+    }
+
+
+    @Override
+    public byte[] marshallingRequest(MyRequest req){
+        return serialize(req);
+    }
+
+    @Override
+    public MyRequest unmarshallingRequest(byte[] data) {
+        return unSerialize(data, MyRequest.class);
+    }
+
+    @Override
+    public byte[] marshallingResponse(MyResponse rsp) {
+        return serialize(rsp);
+    }
+
+    @Override
+    public MyResponse unmarshallingResponse(byte[] data) {
+        return unSerialize(data, MyResponse.class);
     }
 }
