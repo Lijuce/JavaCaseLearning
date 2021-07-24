@@ -1,7 +1,9 @@
 package lijuce.rpc.config;
 
+import lijuce.rpc.annotation.LoadBalanceAno;
 import lijuce.rpc.annotation.MessageProtocolAno;
 import lijuce.rpc.client.ClientProxyFactory;
+import lijuce.rpc.client.balance.LoadBalance;
 import lijuce.rpc.client.discovery.ZookeeperServiceDiscoverer;
 import lijuce.rpc.client.net.NettyNetClient;
 import lijuce.rpc.common.protocal.JavaSerializeMessageProtocol;
@@ -21,6 +23,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -55,7 +58,7 @@ public class AutoConfiguration {
         supportMessageProtocols.put("protoStuff", new JavaSerializeMessageProtocol());
         supportMessageProtocols.put("javaJdk", new SerializeMessageJdk());
         clientProxyFactory.setMessageProtocol(supportMessageProtocols);
-
+        clientProxyFactory.setLoadBalance(getLoadBalance(rpcProperty.getLoadBalance()));
         // 设置网络层实现
         clientProxyFactory.setNetClient(new NettyNetClient());
         return clientProxyFactory;
@@ -87,6 +90,11 @@ public class AutoConfiguration {
         return new RpcProperty();
     }
 
+    /**
+     * 根据配置动态获取协议类型
+     * @param protocolName
+     * @return
+     */
     public static MessageProtocol getMessageProtocol(String protocolName){
         // 利用ServiceLoader得到已定义的类
         ServiceLoader<MessageProtocol> loader = ServiceLoader.load(MessageProtocol.class);
@@ -103,5 +111,19 @@ public class AutoConfiguration {
         }
         // 未能匹配有效协议，手动抛出异常
         throw new rpcException("invalid protocal found!!!");
+    }
+
+    public static LoadBalance getLoadBalance(String loadBalanceType) {
+        ServiceLoader<LoadBalance> loader = ServiceLoader.load(LoadBalance.class);
+        Iterator<LoadBalance> iterator = loader.iterator();
+        while (iterator.hasNext()) {
+            LoadBalance loadBalance = iterator.next();
+            LoadBalanceAno annotation = loadBalance.getClass().getAnnotation(LoadBalanceAno.class);
+            if (loadBalanceType.equals(annotation.value())) {
+                return loadBalance;
+            }
+        }
+        // 未能匹配有效负载均衡类型，手动抛出异常
+        throw new rpcException("invalid LoadBalance found!!!");
     }
 }

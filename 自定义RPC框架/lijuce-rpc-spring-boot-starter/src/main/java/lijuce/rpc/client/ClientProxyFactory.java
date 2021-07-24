@@ -68,6 +68,10 @@ public class ClientProxyFactory {
         this.messageProtocol = messageProtocol;
     }
 
+    public void setLoadBalance(LoadBalance loadBalance) {
+        this.loadBalance = loadBalance;
+    }
+
     // 忽略 unchecked 警告信息，如使用List，ArrayList等未进行参数化产生的
     // 警告信息。
     @SuppressWarnings("unchecked")

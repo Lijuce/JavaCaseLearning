@@ -30,6 +30,14 @@ public class RpcProperty {
      */
     private String loadBalance = "random";
 
+    public String getLoadBalance() {
+        return loadBalance;
+    }
+
+    public void setLoadBalance(String loadBalance) {
+        this.loadBalance = loadBalance;
+    }
+
     public String getRegisterAddress() {
         return registerAddress;
     }

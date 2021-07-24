@@ -1,5 +1,6 @@
 package lijuce.rpc.client.balance;
 
+import lijuce.rpc.annotation.LoadBalanceAno;
 import lijuce.rpc.common.Service;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Random;
  * @Date 2021/7/24 0024 14:34
  * @Version 1.0
  **/
+@LoadBalanceAno("random")
 public class RandomBalance implements LoadBalance{
     private static Random random = new Random();
 
