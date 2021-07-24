@@ -1,5 +1,6 @@
 package lijuce.rpc.properties;
 
+import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 

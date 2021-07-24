@@ -85,7 +85,7 @@
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
 
-        <!--高性能序列化框架-->
+        <!--高性能序列化框架protostuff-->
         <dependency>
             <groupId>com.dyuproject.protostuff</groupId>
             <artifactId>protostuff-runtime</artifactId>
@@ -96,6 +96,13 @@
             <artifactId>protostuff-core</artifactId>
             <version>1.1.1</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 

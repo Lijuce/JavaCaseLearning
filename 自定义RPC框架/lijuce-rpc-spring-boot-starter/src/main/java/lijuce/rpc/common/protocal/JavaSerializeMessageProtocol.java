@@ -4,6 +4,9 @@ import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtobufIOUtil;
 import com.dyuproject.protostuff.Schema;
 import com.dyuproject.protostuff.runtime.RuntimeSchema;
+import lijuce.rpc.annotation.MessageProtocolAno;
+import lijuce.rpc.common.protocal.protoUtils.ProtoBufMessageProtocol;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
 
@@ -11,54 +14,26 @@ import java.io.*;
  * 序列化消息协议
  * @author Lijuce
  */
+@MessageProtocolAno("protoStuff")
 public class JavaSerializeMessageProtocol implements MessageProtocol{
-
-    /**
-     * 序列化
-     * @param obj
-     * @return
-     */
-    public static <T> byte[] serialize(T obj){
-        Schema<T> schema = RuntimeSchema.getSchema((Class<T>) obj.getClass());
-        LinkedBuffer buffer = LinkedBuffer.allocate(512);
-        final byte[] result;
-        try {
-            result = ProtobufIOUtil.toByteArray(obj, schema, buffer);
-        } finally {
-            buffer.clear();
-        }
-        return result;
-    }
-
-    /**
-     * 反序列化
-     * @param protoStuff
-     * @return
-     */
-    private static <T> T unSerialize(byte[] protoStuff, Class<T> clazz){
-        Schema<T> schema = RuntimeSchema.getSchema(clazz);
-        T obj = schema.newMessage();
-        ProtobufIOUtil.mergeFrom(protoStuff, obj, schema);
-        return obj;
-    }
 
     @Override
     public byte[] marshallingRequest(MyRequest req){
-        return serialize(req);
+        return ProtoBufMessageProtocol.serialize(req);
     }
 
     @Override
-    public MyRequest unmarshallingRequest(byte[] data) throws Exception {
-        return unSerialize(data, MyRequest.class);
+    public MyRequest unmarshallingRequest(byte[] data) {
+        return ProtoBufMessageProtocol.unSerialize(data, MyRequest.class);
     }
 
     @Override
-    public byte[] marshallingResponse(MyResponse rsp) throws Exception {
-        return serialize(rsp);
+    public byte[] marshallingResponse(MyResponse rsp) {
+        return ProtoBufMessageProtocol.serialize(rsp);
     }
 
     @Override
-    public MyResponse unmarshallingResponse(byte[] data) throws Exception {
-        return unSerialize(data, MyResponse.class);
+    public MyResponse unmarshallingResponse(byte[] data) {
+        return ProtoBufMessageProtocol.unSerialize(data, MyResponse.class);
     }
 }
