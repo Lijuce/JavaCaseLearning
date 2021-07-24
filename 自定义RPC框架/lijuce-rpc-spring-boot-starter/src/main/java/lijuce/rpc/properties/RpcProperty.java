@@ -25,6 +25,11 @@ public class RpcProperty {
      */
     private String protocol = "javaJdk";
 
+    /**
+     * 负载均衡算法
+     */
+    private String loadBalance = "random";
+
     public String getRegisterAddress() {
         return registerAddress;
     }

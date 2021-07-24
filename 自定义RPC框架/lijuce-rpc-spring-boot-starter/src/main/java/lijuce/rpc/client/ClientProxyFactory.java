@@ -1,5 +1,7 @@
 package lijuce.rpc.client;
 
+import lijuce.rpc.client.balance.LoadBalance;
+import lijuce.rpc.client.balance.RandomBalance;
 import lijuce.rpc.client.discovery.ServiceDiscover;
 import lijuce.rpc.client.net.NetClient;
 import lijuce.rpc.common.Service;
@@ -23,6 +25,7 @@ import static java.lang.reflect.Proxy.newProxyInstance;
  * 封装编组请求、请求发送、编组响应等操作。
  */
 public class ClientProxyFactory {
+
     private ServiceDiscover serviceDiscover;
 
     private NetClient netClient;
@@ -59,6 +62,8 @@ public class ClientProxyFactory {
         return messageProtocol;
     }
 
+    private LoadBalance loadBalance;
+
     public void setMessageProtocol(Map<String, MessageProtocol> messageProtocol) {
         this.messageProtocol = messageProtocol;
     }
@@ -67,9 +72,6 @@ public class ClientProxyFactory {
     // 警告信息。
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Class<T> tClass){
-//        Function<? super Class<?>, ?> o;
-//        o = (Function<? super Class<?>, ?>) newProxyInstance(tClass.getClassLoader(), new Class<?>[]{tClass}, new ClientInvocationHandler(tClass));
-//        return (T) this.objectCache.computeIfAbsent(tClass, o);
         // lambda表达式
         return (T) this.objectCache.computeIfAbsent(tClass,
                 cls -> newProxyInstance(cls.getClassLoader(), new Class<?>[]{cls}, new ClientInvocationHandler(cls)));
@@ -107,7 +109,8 @@ public class ClientProxyFactory {
                 throw new Exception();
             }
             // 随机选择一个服务提供者（软负载均衡）
-            Service service = services.get(random.nextInt(services.size()));
+//            Service service = services.get(random.nextInt(services.size()));
+            Service service = loadBalance.chooseOne(services);
 
             // 2. 构造request对象
             MyRequest request = new MyRequest();
