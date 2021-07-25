@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @ClassName ServerDiscoveryCache
@@ -15,7 +16,8 @@ import java.util.Map;
  * @Version 1.0
  **/
 public class ServerDiscoveryCache {
-    private static final Map<String, List<Service>> ServerMap = new HashMap<>();
+    // 对于多线程情况下，采用带有锁机制的ConcurrentHashMap作为缓存池
+    private static final Map<String, List<Service>> ServerMap = new ConcurrentHashMap<>();
 
     public static final List<String> ServiceClassNames = new ArrayList<>();
 
@@ -41,4 +43,11 @@ public class ServerDiscoveryCache {
         return !ServerMap.containsKey(serviceName) || ServerMap.get(serviceName).size() == 0;
     }
 
+    /**
+     * 清空指定服务名的缓存
+     * @param serviceName
+     */
+    public static void removeAll(String serviceName) {
+        ServerMap.remove(serviceName);
+    }
 }

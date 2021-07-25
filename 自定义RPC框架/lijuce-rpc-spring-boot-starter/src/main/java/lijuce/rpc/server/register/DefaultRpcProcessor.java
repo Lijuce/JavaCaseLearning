@@ -3,7 +3,13 @@ package lijuce.rpc.server.register;
 import lijuce.rpc.annotation.InjectService;
 import lijuce.rpc.annotation.Service;
 import lijuce.rpc.client.ClientProxyFactory;
+import lijuce.rpc.client.cache.ServerDiscoveryCache;
+import lijuce.rpc.client.discovery.ServiceDiscover;
+import lijuce.rpc.client.discovery.ZkChildListenerImpl;
+import lijuce.rpc.client.discovery.ZookeeperServiceDiscoverer;
+import lijuce.rpc.common.constants.Constants;
 import lijuce.rpc.server.RpcServer;
+import org.I0Itec.zkclient.ZkClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -94,6 +100,7 @@ public class DefaultRpcProcessor implements ApplicationListener<ContextRefreshed
 
             Field[] fields = aClass.getDeclaredFields();
             for(Field field: fields){
+                // 找出标记了InjectService注解的属性
                 InjectService injectService = field.getAnnotation(InjectService.class);
                 if (Objects.isNull(injectService))
                     continue;
@@ -105,7 +112,19 @@ public class DefaultRpcProcessor implements ApplicationListener<ContextRefreshed
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
+                // 添加本地服务缓存
+                ServerDiscoveryCache.ServiceClassNames.add(fieldClass.getName());
             }
+        }
+        // 注册子节点监听器
+        if (clientProxyFactory.getServiceDiscover() instanceof ZookeeperServiceDiscoverer) {
+            ZookeeperServiceDiscoverer serviceDiscover = (ZookeeperServiceDiscoverer) clientProxyFactory.getServiceDiscover();
+            ZkClient zkClient = serviceDiscover.getZkClient();
+            ServerDiscoveryCache.ServiceClassNames.forEach(name -> {
+                String servicePath = Constants.ZK_SERVICE_PATH + Constants.PATH_DELIMITER + name + "/service";
+                // 随时监控子节点变动
+                zkClient.subscribeChildChanges(servicePath, new ZkChildListenerImpl());
+            });
         }
     }
 }

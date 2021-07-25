@@ -16,6 +16,14 @@ import java.util.stream.Collectors;
 public class ZookeeperServiceDiscoverer implements ServiceDiscover{
     private ZkClient zkClient;  // 注册中心
 
+    public ZkClient getZkClient() {
+        return zkClient;
+    }
+
+    public void setZkClient(ZkClient zkClient) {
+        this.zkClient = zkClient;
+    }
+
     public ZookeeperServiceDiscoverer(String zkAddress) {
         zkClient = new ZkClient(zkAddress);  // 给定Zookeeper地址，进行构建
         // TODO: ZookeeperSerializer类的实现
