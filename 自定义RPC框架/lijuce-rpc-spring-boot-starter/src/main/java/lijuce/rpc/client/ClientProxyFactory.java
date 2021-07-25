@@ -2,12 +2,15 @@ package lijuce.rpc.client;
 
 import lijuce.rpc.client.balance.LoadBalance;
 import lijuce.rpc.client.balance.RandomBalance;
+import lijuce.rpc.client.cache.ServerDiscoveryCache;
 import lijuce.rpc.client.discovery.ServiceDiscover;
+import lijuce.rpc.client.discovery.ZookeeperServiceDiscoverer;
 import lijuce.rpc.client.net.NetClient;
 import lijuce.rpc.common.Service;
 import lijuce.rpc.common.protocal.MessageProtocol;
 import lijuce.rpc.common.protocal.MyRequest;
 import lijuce.rpc.common.protocal.MyResponse;
+import lijuce.rpc.exception.rpcException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -106,15 +109,15 @@ public class ClientProxyFactory {
 
             // 1. 获取服务信息
             String serviceName = this.aClass.getName();
-            List<Service> services = serviceDiscover.getServices(serviceName);
+            // 通过缓存列表得到服务
+            List<Service> services = getServices(serviceName);
+            // 根据相应负载均衡算法选择服务
+            Service service = loadBalance.chooseOne(services);
             if (services == null || services.isEmpty()){
                 // 获取空服务，抛出异常
                 System.out.println("空服务。。。");
                 throw new Exception();
             }
-            // 随机选择一个服务提供者（软负载均衡）
-//            Service service = services.get(random.nextInt(services.size()));
-            Service service = loadBalance.chooseOne(services);
 
             // 2. 构造request对象
             MyRequest request = new MyRequest();
@@ -143,4 +146,18 @@ public class ClientProxyFactory {
         }
     }
 
+    public List<Service> getServices(String serviceName) {
+        List<Service> services = null;
+        if (ServerDiscoveryCache.isEmpty(serviceName)) {
+            // 第一次读取缓存发现服务为空，直接从注册中心拿取服务进行存储
+            services = serviceDiscover.getServices(serviceName);
+            if (services.size() == 0 || services == null) {
+                throw new rpcException("No provider available");
+            }
+            ServerDiscoveryCache.put(serviceName, services);
+        } else {
+            services = ServerDiscoveryCache.get(serviceName);
+        }
+        return services;
+    }
 }
