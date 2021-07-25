@@ -1,1 +1,3 @@
 lijuce.rpc.client.balance.RandomBalance
+lijuce.rpc.client.balance.FullRoundBalance
+lijuce.rpc.client.balance.WeightRoundBalance

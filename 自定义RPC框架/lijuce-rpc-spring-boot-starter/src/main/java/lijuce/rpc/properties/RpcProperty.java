@@ -30,6 +30,19 @@ public class RpcProperty {
      */
     private String loadBalance = "random";
 
+    /**
+     * 负载均衡所需用到的权重
+     */
+    private Integer weight = 1;
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
+    }
+
     public String getLoadBalance() {
         return loadBalance;
     }
