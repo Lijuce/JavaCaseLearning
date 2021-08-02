@@ -20,8 +20,16 @@ import java.util.concurrent.CountDownLatch;
 public class SendHandler extends ChannelInboundHandlerAdapter {
     private static Logger logger = LoggerFactory.getLogger(SendHandler.class);
 
-    private CountDownLatch countDownLatch;  // CD锁
-    private Object readMsg = null;  // 读取得的数据
+    /**
+     * CD锁
+     */
+    private CountDownLatch countDownLatch;
+
+    /**
+     * 读取得的数据
+     */
+    private Object readMsg = null;
+
     private byte[] data;
 
     public SendHandler(byte[] data) {
@@ -37,10 +45,13 @@ public class SendHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("Successful connection to server: {}", ctx);
-        ByteBuf reqBuffer = Unpooled.buffer(data.length);  // 创建写入缓冲区
-        reqBuffer.writeBytes(data);  // 将待发送的数据写入缓冲区
+        // 创建写入缓冲区
+        ByteBuf reqBuffer = Unpooled.buffer(data.length);
+        // 将待发送的数据写入缓冲区
+        reqBuffer.writeBytes(data);
         logger.info("Client sends message：{}", reqBuffer);
-        ctx.writeAndFlush(reqBuffer);  // 写入后刷新队列
+        // 写入后刷新队列
+        ctx.writeAndFlush(reqBuffer);
     }
 
     /**
@@ -69,9 +80,14 @@ public class SendHandler extends ChannelInboundHandlerAdapter {
         return readMsg;
     }
 
+    /**
+     * 待所有数据读取至缓冲区后，刷新，正式读入队列
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        ctx.flush(); // 待所有数据读取至缓冲区后，刷新，正式读入队列
+        ctx.flush();
     }
 
     /**

@@ -12,6 +12,11 @@ public class MyResponse implements Serializable {
     private static final long serialVersionUID = -4317845782629589997L;
 
     /**
+     * 唯一标识的请求ID
+     */
+    private String requestId;
+
+    /**
      * 响应头信息
      */
     private Map<String, String> headers = new HashMap<>();
@@ -63,4 +68,13 @@ public class MyResponse implements Serializable {
     public void setException(Exception exception) {
         this.exception = exception;
     }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
 }

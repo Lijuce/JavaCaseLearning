@@ -8,6 +8,11 @@ public class MyRequest implements Serializable {
     private static final long serialVersionUID = -5200571424236772650L;
 
     /**
+     * 唯一标识的请求ID
+     */
+    private String requestId;
+
+    /**
      * 服务名
      */
     private String serviceName;
@@ -71,5 +76,13 @@ public class MyRequest implements Serializable {
 
     public void setParameters(Object[] parameters) {
         this.parameters = parameters;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 }
